@@ -147,4 +147,13 @@ typedef NS_ENUM(NSUInteger, WMPageControllerCachePolicy){
  */
 - (instancetype)initWithViewControllerClasses:(NSArray *)classes andTheirTitles:(NSArray *)titles;
 
+/**
+ *  Use this method when subclassing and use Storyboards
+ *
+ *  @param aDecoder The decoder related to VC in toryboard
+ *
+ *  @return An instance of WMPageController
+ */
+- (nonnull instancetype)initWithCoder:(NSCoder * __nonnull)aDecoder;
+
 @end

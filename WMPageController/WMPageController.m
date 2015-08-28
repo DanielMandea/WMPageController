@@ -53,12 +53,20 @@
 }
 
 #pragma mark - Public Methods
+
 - (instancetype)initWithViewControllerClasses:(NSArray *)classes andTheirTitles:(NSArray *)titles {
     if (self = [super init]) {
         NSAssert(classes.count == titles.count, @"classes.count != titles.count");
         self.viewControllerClasses = [NSArray arrayWithArray:classes];
         self.titles = [NSArray arrayWithArray:titles];
+        
+        [self setup];
+    }
+    return self;
+}
 
+- (nonnull instancetype)initWithCoder:(NSCoder * __nonnull)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
         [self setup];
     }
     return self;
@@ -78,7 +86,7 @@
 
 - (void)setItemsWidths:(NSArray *)itemsWidths {
     NSAssert(itemsWidths.count == self.titles.count, @"itemsWidths.count != self.titles.count");
-    _itemsWidths = itemsWidths;
+    _itemsWidths = [itemsWidths copy];
 }
 
 - (void)setSelectIndex:(int)selectIndex {
@@ -256,7 +264,7 @@
         NSValue *pointValue = self.posRecords[@(index)];
         if (pointValue) {
             CGPoint pos = [pointValue CGPointValue];
-            // 奇怪的现象，我发现collectionView的contentSize是 {0, 0};
+            // 奇怪的现象，我发现 collectionView 的 contentSize 是 {0, 0};
             [scrollView setContentOffset:pos];
         }
     }
@@ -336,11 +344,11 @@
     self.scrollView.frame = scrollFrame;
     self.scrollView.contentSize = CGSizeMake(self.titles.count*viewWidth, viewHeight);
     [self.scrollView setContentOffset:CGPointMake(self.selectIndex*viewWidth, 0)];
-
+    
     self.currentViewController.view.frame = [self.childViewFrames[self.selectIndex] CGRectValue];
     
     [self resetMenuView];
-
+    
     [self.view layoutIfNeeded];
 }
 
@@ -412,7 +420,7 @@
     [self.scrollView setContentOffset:targetP animated:gap > 1?NO:self.pageAnimatable];
     if (gap > 1 || !self.pageAnimatable) {
         [self postFullyDisplayedNotificationWithCurrentIndex:(int)index];
-        // 由于不触发-scrollViewDidScroll: 手动清除控制器..
+        // 由于不触发 -scrollViewDidScroll: 手动清除控制器..
         UIViewController *vc = [self.displayVC objectForKey:@(currentIndex)];
         if (vc) {
             [self removeViewController:vc atIndex:currentIndex];
