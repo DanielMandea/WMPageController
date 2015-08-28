@@ -53,12 +53,20 @@
 }
 
 #pragma mark - Public Methods
+
 - (instancetype)initWithViewControllerClasses:(NSArray *)classes andTheirTitles:(NSArray *)titles {
     if (self = [super init]) {
         NSAssert(classes.count == titles.count, @"classes.count != titles.count");
         self.viewControllerClasses = [NSArray arrayWithArray:classes];
         self.titles = [NSArray arrayWithArray:titles];
 
+        [self setup];
+    }
+    return self;
+}
+
+- (nonnull instancetype)initWithCoder:(NSCoder * __nonnull)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
         [self setup];
     }
     return self;
